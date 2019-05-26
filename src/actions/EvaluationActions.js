@@ -7,10 +7,13 @@ import {
 	GO_TO_EVALUATION,
 	GO_TO_EVALUATION_SUCCESS,
 	GO_TO_EVALUATION_FAIL,
+	GO_TO_INITIAL_CHECKS_SUCCESS,
+	GO_TO_INITIAL_CHECKS_FAIL,
 	EVALUATE_USER,
 	EVALUATE_USER_SUCCESS,
 	EVALUATE_USER_FAIL,
 	ADD_RESULT,
+	ADD_OPTIONAL_RESULT,
 	CHECK
 } from "./types"
 
@@ -40,10 +43,15 @@ export const addResult = (results, result) => dispatch => {
   dispatch({ type: ADD_RESULT, payload: results })
 }
 
+export const addOptionalResult = (optionalResults, optionalResult) => dispatch => {
+  optionalResults.push(optionalResult)
+  dispatch({ type: ADD_OPTIONAL_RESULT, payload: optionalResults })
+}
+
 export const goToEvaluation = (eUvus, session, checks) => dispatch => {
 	dispatch({ type: GO_TO_EVALUATION, payload: eUvus })
   console.log('eUvus: ', eUvus)
-  console.log('session: ', session)
+	console.log('session: ', session)
 
 	if (!checks.includes(false)) {
   axios.get(`http://192.168.0.30:3000/api/v1/feedbacks/${session}`)
@@ -60,36 +68,77 @@ export const goToEvaluation = (eUvus, session, checks) => dispatch => {
 }
 
 const goToEvaluationSuccess = (dispatch, data) => {
-  dispatch({ type: GO_TO_EVALUATION_SUCCESS, payload: data.feedback.points })
+  dispatch({ type: GO_TO_EVALUATION_SUCCESS, payload: data.feedback })
   Actions.evaluation()
 }
 
-export const goToEvaluationFail = dispatch => {
+const goToEvaluationFail = dispatch => {
 	console.log('goToEvaluationFail')
 	dispatch({ type: GO_TO_EVALUATION_FAIL })
 }
 
-export const evaluateUser = (eUvus, session, results, ps) => dispatch => {
-  dispatch({ type: EVALUATE_USER })
-  if (results.includes(true)) {	
-	axios.put(`http://192.168.0.30:3000/api/v1/user/${eUvus}/${session}`, {result: 'true', ps})
-	.then(response => {
-    evaluateUserSuccess(dispatch)
-	})
-	.catch(error => {
-    console.log(error)  
-    evaluateUserFail(dispatch) 
-	})
-  } else {
-	axios.put(`http://192.168.0.30:3000/api/v1/user/${eUvus}/${session}`, {result: 'false', ps})
-	.then(response => {    
-		evaluateUserSuccess(dispatch)
-	})
-	.catch(error => {
-	  console.log(error)
-    evaluateUserFail(dispatch) 
-	})
-  }
+export const goToInitialChecks = (eUvus, session) => dispatch => {
+	console.log('goToInitialChecks')
+	if (eUvus==='' || session===''){
+		goToInitialChecksFail(dispatch)
+	} else {
+		goToInitialChecksSuccess(dispatch)
+	}
+}
+
+const goToInitialChecksFail = (dispatch) => {
+	console.log('goToInitialChecksFail')
+	dispatch({ type: GO_TO_INITIAL_CHECKS_FAIL })
+}
+
+const goToInitialChecksSuccess = (dispatch) => {
+	console.log('goToInitialChecksSuccess')
+	Actions.initialChecks()
+	dispatch({ type: GO_TO_INITIAL_CHECKS_SUCCESS })
+}
+
+export const evaluateUser = (eUvus, session, results, optionalResults, ps) => dispatch => {
+	console.log('Results: ', results)
+	console.log( 'Optional Results: ', optionalResults)
+	console.log( 'P/S: ', ps)
+	dispatch({ type: EVALUATE_USER })
+  if (!results.includes(false) && !optionalResults.includes(false)) {	
+		axios.put(`http://192.168.0.30:3000/api/v1/user/${eUvus}/${session}`, {result: 'true', optionalResult: 'true', ps: ps})
+		.then(response => {
+			evaluateUserSuccess(dispatch)
+		})
+		.catch(error => {
+			console.log(error)  
+			evaluateUserFail(dispatch) 
+		})
+  } else if (!results.includes(false) && optionalResults.includes(false)) {
+		axios.put(`http://192.168.0.30:3000/api/v1/user/${eUvus}/${session}`, {result: 'true', optionalResult: 'false', ps: ps})
+		.then(response => {    
+			evaluateUserSuccess(dispatch)
+		})
+		.catch(error => {
+			console.log(error)
+			evaluateUserFail(dispatch) 
+		})
+  } else if (results.includes(false) && !optionalResults.includes(false)){
+		axios.put(`http://192.168.0.30:3000/api/v1/user/${eUvus}/${session}`, {result: 'false', optionalResult: 'true', ps: ps})
+		.then(response => {    
+			evaluateUserSuccess(dispatch)
+		})
+		.catch(error => {
+			console.log(error)
+			evaluateUserFail(dispatch) 
+		})
+	} else if (results.includes(false) && optionalResults.includes(false)) {
+		axios.put(`http://192.168.0.30:3000/api/v1/user/${eUvus}/${session}`, {result: 'false', optionalResult: 'false', ps: ps})
+		.then(response => {    
+			evaluateUserSuccess(dispatch)
+		})
+		.catch(error => {
+			console.log(error)
+			evaluateUserFail(dispatch) 
+		})
+	}
 }
 
 const evaluateUserSuccess = (dispatch) => {

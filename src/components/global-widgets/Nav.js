@@ -21,6 +21,7 @@ export default class Nav extends Component {
   home(){
     return (
       <View  style={styles.container}>
+        <View style = {{width:25, height:25, margin:10}}/>
         <Image source ={require('../../images/logo.png')} resizeMode = "contain" style={{width:100, height:50}} />
         <TouchableOpacity onPress ={this.props.toProfile}>
         <Iconz name="ios-person" color ="#888" size={25} style={{margin:10}} />

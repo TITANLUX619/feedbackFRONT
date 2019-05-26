@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import Nav from './global-widgets/Nav'
 import { Actions } from "react-native-router-flux";
 import { Card, CardSection, Input, Button, Spinner } from "./common";
-import { eUvusChanged, sessionChanged, PSChanged, goToEvaluation } from "../actions";
+import { eUvusChanged, sessionChanged, PSChanged, goToEvaluation, goToInitialChecks } from "../actions";
 
 class Start extends Component {
 
@@ -27,11 +27,13 @@ class Start extends Component {
   }
   
   onPSChange(text) {
+		console.log(text)
     this.props.PSChanged(text);
   }
 
 	onButtonPress() {
-		Actions.initialChecks()
+		console.log('P/S: ', this.props.ps)
+		this.props.goToInitialChecks(this.props.eUvus, this.props.session)
 	}
 
 	renderButton() {
@@ -39,7 +41,7 @@ class Start extends Component {
 			return <Spinner size="large" />;
 		}
 
-		return <Button customOnPress={this.onButtonPress.bind(this)}>Go to evaluation</Button>;
+		return <Button customOnPress={this.onButtonPress.bind(this)}>Ir a la evaluación</Button>;
 	}
 
 	renderError() {
@@ -55,7 +57,7 @@ class Start extends Component {
 	render() {
 		return (
 			<View>
-            	<Nav toProfile = {() => Actions.profile()}/>
+        <Nav toProfile = {() => Actions.profile()}/>
 				<View style={styles.containerStyle}> 
 					<Card>
 						<CardSection>
@@ -76,22 +78,25 @@ class Start extends Component {
 							/>
 						</CardSection>
             <CardSection>
-              <Text style={{ fontSize: 20, paddingRight: 5, paddingLeft: 5}}>Sesión:</Text>
+              <Text style={{ fontSize: 20, paddingRight: 5, paddingLeft: 20}}>Sesión:</Text>
               <Checkbox 
                 label='Primera' 
-                checked={this.state.checked} 
+								value=""
+								checked={this.state.checked} 
                 onCheck={checked => {
-                  this.setState({checked})
-                  this.onPSChange.bind(this, 'P')}}
+									this.props.PSChanged('P')
+                  this.setState({checked})}}
                 />
               <Checkbox 
-                label='Segunda' 
-                checked={!this.state.checked} 
+								label='Segunda' 
+								value=""
+								checked={!this.state.checked} 
                 onCheck={checked => {
-                  this.setState({checked})
-                  this.onPSChange.bind(this, 'S')}}
+									this.props.PSChanged('S')
+                  this.setState({checked: !checked})}}
               />
             </CardSection>
+
 						<View style={{ backgroundColor: "white" }}>
 							<Text style={styles.errorTextStyle}>{this.props.error}</Text>
 						</View>
@@ -106,7 +111,8 @@ class Start extends Component {
 
 const mapStateToProps = state => ({
 	eUvus: state.eval.eUvus,
-  session: state.eval.session,
+	session: state.eval.session,
+	ps: state.eval.ps,
   error: state.eval.error
 });
 
@@ -123,5 +129,5 @@ const styles = {
 
 export default connect(
 	mapStateToProps,
-	{ eUvusChanged, sessionChanged, PSChanged, goToEvaluation }
+	{ eUvusChanged, sessionChanged, PSChanged, goToEvaluation, goToInitialChecks }
 )(Start);

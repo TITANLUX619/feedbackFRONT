@@ -16,11 +16,11 @@ class Welcome extends Component {
 				<Image source ={require('../images/welcome.png')} resizeMode = "contain"  style={styles.image}/>
 				<Card>
 					<View style={{ alignItems: "center" }}>
-						<Text style={{ fontSize: 25}}>WELCOME!</Text>
+						<Text style={{ fontSize: 25}}>BIENVENIDO!</Text>
 					</View>
 					<View style={{ alignItems: 'center' }}>
 					<TextLink onPress={this.onLinkPress.bind(this)}>
-						Get Access!
+						¡Accede!
 					</TextLink>
 				</View>
 				</Card>

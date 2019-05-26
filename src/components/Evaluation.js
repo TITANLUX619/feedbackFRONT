@@ -17,49 +17,59 @@ import Nav from './global-widgets/Nav'
 import SwipeCards from 'react-native-swipe-cards';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Card, CardSection, Input, Button, Spinner, TextLink } from "./common";
-import { eUvusChanged, sessionChanged, goToEvaluation, addResult, evaluateUser } from "../actions";
+import { eUvusChanged, sessionChanged, goToEvaluation, addResult, addOptionalResult, evaluateUser } from "../actions";
 
 
 class Evaluation extends Component {
   constructor(props){
     super(props)
     this.state = {
-      cards: []
+      cards: [],
+      cont: 1
     }
   }
 
   componentWillMount () {
-    console.log('1', this.props.points)
     let cards = []
-    for (let i=0; i<=this.props.points.length-1; i++) {
-      card = {"id": i, "text": this.props.points[i]}
+    for (let i=0; i<=this.props.individual.length-1; i++) {
+      card = {"id": i, "type": "Individual", "text": this.props.individual[i]}
+      cards.push(card)
+    }
+    for (let i=0; i<=this.props.group.length-1; i++) {
+      card = {"id": i, "type": "Group", "text": this.props.group[i]}
+      cards.push(card)
+    }
+    for (let i=0; i<=this.props.optional.length-1; i++) {
+      card = {"id": i, "type": "Optional", "text": this.props.optional[i]}
       cards.push(card)
     }
     this.setState({cards: cards});
-    console.log('1', this.state.cards)
   }
 
   Card(x){
     return (
       <View style={styles.card}>
-        <View style={{width:350, height:70, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-          <View style={{ flex:1, position: "relative", justifyContent:'center'}} >
-            <Text style={{fontSize:20, fontWeight:'300', color:'#444'}}>{x.id + 1}: </Text>
-            <Text style={{fontSize:21, fontWeight:'200', color:'#444'}}>{x.text}</Text>
-          </View>
+        <View style={{marginTop: 200, width:350, height:70, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+          <Card>
+            <CardSection>
+            <Text style={{fontSize:20, fontWeight:'300', color:'#444'}}>{x.type}: </Text>
+            </CardSection>
+            <CardSection>
+            <Text style={{fontSize:25, fontWeight:'200', color:'#444'}}>{x.text}</Text>
+            </CardSection>
+          </Card>
         </View>
       </View>
     )
   }
 
   handleYup (card) {
-    console.log(this.props)
-    this.props.addResult(this.props.results, true)
+    this.yup(card)
     console.log(`Yup for ${card.text}`)
   }
 
   handleNope (card) {
-    this.props.addResult(this.props.results, false)
+    this.nope(card)
     console.log(`Nope for ${card.text}`)
   }
 
@@ -80,16 +90,27 @@ class Evaluation extends Component {
   }
 
   yup(){
-    this.props.addResult(this.props.results, true)
+    if (this.state.cont<=this.props.individual.length+this.props.group.length) {
+      this.props.addResult(this.props.results, true)
+    } else {
+      this.props.addOptionalResult(this.props.optionalResults, true)
+    }
+    this.setState({cont: this.state.cont+1})
     this.refs['swiper']._goToNextCard()  
   }
 
   nope(){
-    this.props.addResult(this.props.results, false)
-    this.refs['swiper']._goToNextCard()  }
+    if (this.state.cont<=this.props.individual.length+this.props.group.length) {
+      this.props.addResult(this.props.results, false)
+    } else {
+      this.props.addOptionalResult(this.props.optionalResults, false)
+    }
+    this.setState({cont: this.state.cont+1})
+    this.refs['swiper']._goToNextCard()  
+  }
 
   evaluateUser(){
-    this.props.evaluateUser(this.props.eUvus, this.props.session, this.props.results, this.props.ps)
+    this.props.evaluateUser(this.props.eUvus, this.props.session, this.props.results, this.props.optionalResults, this.props.ps)
   }
 
   render() {
@@ -159,11 +180,14 @@ const mapStateToProps = state => ({
   eUvus: state.eval.eUvus,
   session: state.eval.session,
   results: state.eval.results,
+  optionalResults: state.eval.optionalResults,
   ps: state.eval.ps,
-  points: state.eval.points
+  individual: state.eval.individual,
+  group: state.eval.group,
+  optional: state.eval.optional
 });
 
 export default connect(
 	mapStateToProps,
-	{ eUvusChanged, sessionChanged, goToEvaluation, addResult, evaluateUser }
+	{ eUvusChanged, sessionChanged, goToEvaluation, addResult, addOptionalResult, evaluateUser }
 )(Evaluation);

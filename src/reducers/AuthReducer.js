@@ -22,6 +22,8 @@ const INITIAL_STATE = {
 	password: "",
 	uvus: "",
 	group: "",
+	evaluations: [],
+	optionalEvaluations: [],
 	user: null,
 	jwt: null,
 	error: "",
@@ -61,14 +63,14 @@ export default (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				loading: false,
-				error: "Autenticacion Fallida.",
+				error: "Authentication Failed.",
 				password: ""
 			}
 		case REGISTER_USER_FAIL:
 			return {
 				...state,
 				loading: false,
-				error: "Registro Fallido.",
+				error: "Registry Failed.",
 				password: ""
 			}
 		default:

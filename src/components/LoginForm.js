@@ -81,18 +81,6 @@ class LoginForm extends Component {
 	}
 }
 
-const mapStateToProps = state => ({
-	name: state.auth.name,
-	email: state.auth.email,
-	password: state.auth.password,
-	uvus: state.auth.uvus,
-	group: state.auth.group,
-	jwt: state.auth.jwt,
-	error: state.auth.error,
-	loading: state.auth.loading,
-	user: state.auth.user
-});
-
 const styles = {
 	errorTextStyle: {
 		fontSize: 20,
@@ -105,6 +93,19 @@ const styles = {
 		justifyContent: "center"
 	}
 };
+
+const mapStateToProps = state => ({
+	name: state.auth.name,
+	email: state.auth.email,
+	password: state.auth.password,
+	uvus: state.auth.uvus,
+	group: state.auth.group,
+	jwt: state.auth.jwt,
+	error: state.auth.error,
+	loading: state.auth.loading,
+	user: state.auth.user
+});
+
 
 export default connect(
 	mapStateToProps,

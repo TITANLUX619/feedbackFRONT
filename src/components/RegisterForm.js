@@ -40,7 +40,7 @@ class RegisterForm extends Component {
 			return <Spinner size="large" />;
 		}
 
-		return <Button customOnPress={this.onButtonPress.bind(this)}>Register</Button>;
+		return <Button customOnPress={this.onButtonPress.bind(this)}>¡Registrarse!</Button>;
 	}
 
 	renderError() {

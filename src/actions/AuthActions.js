@@ -135,8 +135,8 @@ const deviceStorage = {
 							headers: headers
 						})
 							.then(response => {
-								console.log('Getting access', response)
-								dispatch({ type: ACCESS_ALLOWED, payload: { name: response.data.user.name, email: response.data.user.email, uvus: response.data.user.uvus, group: response.data.user.group, evaluations: response.data.user.evaluations, message: response.data.user.message } });
+								console.log('Getting access', response.data)
+								dispatch({ type: ACCESS_ALLOWED, payload: { name: response.data.user.name, email: response.data.user.email, uvus: response.data.user.uvus, group: response.data.user.group, evaluations: response.data.user.evaluations, optionalEvaluations: response.data.user.optionalEvaluations} });
 								Actions.main();
 							})
 							.catch(error => {

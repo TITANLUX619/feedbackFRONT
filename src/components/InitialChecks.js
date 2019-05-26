@@ -38,32 +38,39 @@ class InitialChecks extends Component {
             <CardSection>
               <Text style={{ fontSize: 20}}>Antes de empezar, abrir en el portátil:</Text>
             </CardSection>
-            <Checkbox label='Una pestaña con el workspace de Cloud9 correspondiente a su usuario (abierto, de forma que se vean los directorios)' 
+            <Checkbox 
+              label='Una pestaña con el workspace de Cloud9 correspondiente a su usuario (abierto, de forma que se vean los directorios)' 
+              value=""
               checked={this.props.checks[0]} 
               onCheck={checked => {this.props.check(this.props.checks, 0, checked)}}
             />
             <Checkbox 
               label='Una pestaña con el repositorio Github SOS1819-XX en la página de "boards"' 
+              value=""
               checked={this.props.checks[1]} 
               onCheck={checked => {this.props.check(this.props.checks, 1, checked)}}
             />
             <Checkbox 
               label='Una pestaña con la web de Toggl del equipo con un informe horas de las horas invertidas' 
+              value=""
               checked={this.props.checks[2]} 
               onCheck={checked => {this.props.check(this.props.checks, 2, checked)}}
             />
             <Checkbox 
               label='Una pestaña con la web de la clase de Piazza' 
+              value=""
               checked={this.props.checks[3]} 
               onCheck={checked => {this.props.check(this.props.checks, 3, checked)}}
             />
             <Checkbox 
               label='Una pestaña con la web del Slack de la asigatura' 
+              value=""
               checked={this.props.checks[4]} 
               onCheck={checked => {this.props.check(this.props.checks, 4, checked)}}
             />
             <Checkbox 
               label='Una pestaña con la hoja de la propuesta de trabajo de su grupo en Google Drive' 
+              value=""
               checked={this.props.checks[5]} 
               onCheck={checked => {this.props.check(this.props.checks, 5, checked)}}
             />
